@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding-Decoding Timed Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .timer {
+            text-align: right;
+            padding: 10px;
+        }
+        .question {
+            background: #fff;
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        .question h3 {
+            margin-top: 0;
+        }
+        .question p {
+            margin: 10px 0;
+        }
+        .submit-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+    <script>
+        let time = 2 * 60;
+        let timer;
+
+        const correctAnswers = {
+            q1: 'a',
+            q2: 'c'
+        };
+
+        function startTimer() {
+            timer = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            document.getElementById("timer").innerText = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            if (time > 0) {
+                time--;
+            } else {
+                clearInterval(timer);
+                document.getElementById("test-form").submit();
+            }
+        }
+
+        function submitTest(event) {
+            event.preventDefault();
+            clearInterval(timer);
+            const form = document.getElementById("test-form");
+            const formData = new FormData(form);
+            let score = 0;
+            let results = "<h2>Selected Answers:</h2><ul>";
+
+            formData.forEach((value, key) => {
+                results += `<li>${key}: ${value}`;
+                if (value === correctAnswers[key]) {
+                    score++;
+                    results += " (Correct)";
+                } else {
+                    results += " (Incorrect)";
+                }
+                results += `</li>`;
+            });
+
+            results += `</ul><h3>Your Score: ${score} / ${Object.keys(correctAnswers).length}</h3>`;
+            localStorage.setItem("results", results);
+            window.location.href = "results.html";
+        }
+    </script>
+</head>
+<body onload="startTimer()">
+    <header>
+        <h1>Coding-Decoding Timed Test</h1>
+    </header>
+    <div class="container">
+        <div class="timer">
+            Time Left: <span id="timer">2:00</span>
+        </div>
+        <form id="test-form" onsubmit="submitTest(event)">
+            <div class="question">
+                <h3>1. In a certain code language, BROWSE is written as GUYQTD. What will be written in the same language to AMALGAM?</h3>
+                <p><input type="radio" name="q1" value="a"> (a) DPMDGCP</p>
+                <p><input type="radio" name="q1" value="b"> (b) OCINCOC</p>
+                <p><input type="radio" name="q1" value="c"> (c) CONCICO</p>
+                <p><input type="radio" name="q1" value="d"> (d) PMDGCPD</p>
+            </div>
+            <div class="question">
+                <h3>2. In a certain code language, NIB is written as 112 and COB as 122. What will be written to JET in the same code language?</h3>
+                <p><input type="radio" name="q2" value="a"> (a) 92</p>
+                <p><input type="radio" name="q2" value="b"> (b) 119</p>
+                <p><input type="radio" name="q2" value="c"> (c) 102</p>
+                <p><input type="radio" name="q2" value="d"> (d) 81</p>
+            </div>
+            <div class="submit-container">
+                <button type="submit">Submit Test</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
